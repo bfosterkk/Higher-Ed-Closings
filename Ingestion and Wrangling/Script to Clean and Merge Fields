@@ -1,0 +1,195 @@
+DROP TABLE IF EXISTS higher_ed_dataset_1;
+CREATE TABLE higher_ed_dataset_1 AS
+SELECT unitid
+	,instname
+	,ay
+	
+	--Changing percent fields into decimals
+	,ROUND(percent_ft_ug_aid::DECIMAL/100, 2) AS percent_ft_ug_aid
+	,ROUND(percent_ft_ug_inst_aid::DECIMAL/100, 2) AS percent_ft_ug_inst_aid
+	,ROUND(percent_ft_ug_pell_aid::DECIMAL/100, 2) AS percent_ft_ug_pell_aid
+
+	--Merging public and private aid year fields	
+	,CASE WHEN avg_np_stdnts_aid_current_yr_public ISNULL AND avg_np_stdnts_aid_current_yr_private NOTNULL THEN avg_np_stdnts_aid_current_yr_private
+		WHEN avg_np_stdnts_aid_current_yr_private ISNULL AND avg_np_stdnts_aid_current_yr_public NOTNULL THEN avg_np_stdnts_aid_current_yr_public
+		ELSE NULL END AS avg_np_stdnts_aid_current_yr
+	,CASE WHEN avg_np_stdnts_aid_prior_1_yr_public ISNULL AND avg_np_stdnts_aid_prior_1_yr_private NOTNULL THEN avg_np_stdnts_aid_prior_1_yr_private
+		WHEN avg_np_stdnts_aid_prior_1_yr_private ISNULL AND avg_np_stdnts_aid_prior_1_yr_public NOTNULL THEN avg_np_stdnts_aid_prior_1_yr_public
+		ELSE NULL END AS avg_np_stdnts_aid_1_yr
+	,CASE WHEN avg_np_stdnts_aid_prior_2_yr_public ISNULL AND avg_np_stdnts_aid_prior_2_yr_private NOTNULL THEN avg_np_stdnts_aid_prior_2_yr_private
+		WHEN avg_np_stdnts_aid_current_yr_private ISNULL AND avg_np_stdnts_aid_prior_2_yr_public NOTNULL THEN avg_np_stdnts_aid_prior_2_yr_public
+		ELSE NULL END AS avg_np_stdnts_aid_2_yr
+	
+	,stabbr
+	,sector
+
+	--Adding a description to the sector field
+	,CASE WHEN sector='1' THEN 'Public  4-year or above' 
+		WHEN sector='2' THEN 'Private not-for-profit 4 year or above'
+		ELSE NULL END AS sector_desc
+		
+	,instsize
+		
+	--Adding a description to the institution size field	
+	,CASE WHEN instsize='1' THEN 'Under 1000' 
+		WHEN instsize='2' THEN '1000 to 4999'
+		WHEN instsize='3' THEN '5000 to 9999'
+		WHEN instsize='4' THEN '10000 to 19999'
+		WHEN instsize='5' THEN '200000 or above'
+		WHEN instsize='-1' THEN 'Not reported'
+		WHEN instsize='-2' THEN 'Not applicable'
+		ELSE NULL END AS instsize_descr
+		
+	,city
+	,zip
+		
+	--Converting negative dates to nulls, and fixing date fields
+	,CASE WHEN closedat IN ('-1','-2') THEN NULL 
+		WHEN closedat='41791' THEN '6/1/2014'
+		WHEN closedat='41978' THEN '12/5/2014'
+		WHEN closedat='42083' THEN'3/20/2015'
+		WHEN closedat='42183' THEN '6/28/2015'
+		WHEN closedat='42185' THEN '6/30/2015'
+		WHEN closedat='42209' THEN '7/24/2015'
+		WHEN closedat='42237' THEN '8/21/2015'
+		WHEN closedat='42247' THEN '8/31/2015'
+		WHEN closedat='42369' THEN '12/31/2015'
+		WHEN closedat='42517' THEN '5/27/2016'
+		WHEN closedat='9-Aug' THEN '8/1/2009'
+		WHEN closedat='10-Aug' THEN  '8/1/2010'
+		WHEN closedat='13-Dec' THEN  '12/1/2012'
+		WHEN closedat='10-Jun' THEN '6/1/2010'
+		WHEN closedat='10-Oct' THEN '10/1/2010'
+		WHEN closedat='2008' THEN '1/1/2008' --Changing 2008 to the first date of the year
+		WHEN closedat='2009' THEN '1/1/2009' --Changing 2009 to the first date of the year
+		ELSE closedat END AS closed_date
+	
+	,pub_in_state_tuition_fees
+	,pub_out_state_tuition_fees
+	
+	--Changing rate fields into decimals
+	,ROUND(ft_retention_rate::DECIMAL/100, 2) AS ft_retention_rate
+	,ROUND(pt_retention_rate::DECIMAL/100, 2) AS pt_retention_rate
+	
+	,enrtot
+	,enrft
+	,enrpt
+
+	--Changing percent fields into decimals
+	,ROUND(admissions_yield::DECIMAL/100, 2) AS admissions_yield
+	,ROUND(percent_admitted::DECIMAL/100, 2) AS percent_admitted
+	,ROUND(admissions_yield_ft::DECIMAL/100, 2) AS admissions_yield_ft
+	,ROUND(admissions_yield_pt::DECIMAL/100, 2) AS admissions_yield_pt
+	
+	,price_in_state_on_campus
+	,price_out_state_on_campus
+	,un_dup_12_month_hc
+	
+	--Changing rate fields into decimals
+	,ROUND(transfer_out_rate::DECIMAL/100, 2) AS transfer_out_rate	
+
+	,num_completed_ba_deg_100
+	,num_completed_ba_deg_150
+	,num_completed_ba_deg_200
+	
+	--Changing percent fields into decimals
+	,ROUND(perc_completed_ba_deg_100::DECIMAL/100, 2) AS perc_completed_ba_deg_100	
+	,ROUND(perc_completed_ba_deg_150::DECIMAL/100, 2) AS perc_completed_ba_deg_150	
+	,ROUND(perc_completed_ba_deg_200::DECIMAL/100, 2) AS perc_completed_ba_deg_200	
+	
+	--Merging FASB and GASB fields
+	,CASE WHEN cor_rev_total_dollars_gasb ISNULL AND cor_rev_total_dollars_fasb NOTNULL THEN ROUND(cor_rev_total_dollars_fasb::DECIMAL/100, 2)  
+		WHEN cor_rev_total_dollars_fasb ISNULL AND cor_rev_total_dollars_gasb NOTNULL THEN ROUND(cor_rev_total_dollars_gasb::DECIMAL/100, 2)  
+		ELSE NULL END AS cor_rev_total_dollars_comb
+	,CASE WHEN cor_rev_perc_tuition_fees_gasb ISNULL AND cor_rev_perc_tuition_fees_fasb NOTNULL THEN ROUND(cor_rev_perc_tuition_fees_fasb::DECIMAL/100, 2)  
+		WHEN cor_rev_perc_tuition_fees_fasb ISNULL AND cor_rev_perc_tuition_fees_gasb NOTNULL THEN ROUND(cor_rev_perc_tuition_fees_gasb::DECIMAL/100, 2)  
+		ELSE NULL END AS cor_rev_perc_tuition_fees_comb
+	,CASE WHEN cor_rev_perc_grants_gasb ISNULL AND cor_rev_perc_grants_fasb NOTNULL THEN ROUND(cor_rev_perc_grants_fasb::DECIMAL/100, 2)  
+		WHEN cor_rev_perc_grants_fasb ISNULL AND cor_rev_perc_grants_gasb NOTNULL THEN ROUND(cor_rev_perc_grants_gasb::DECIMAL/100, 2)  
+		ELSE NULL END AS cor_rev_perc_grants_comb	
+	,CASE WHEN cor_rev_perc_other_gasb ISNULL AND cor_rev_perc_other_fasb NOTNULL THEN ROUND(cor_rev_perc_other_fasb::DECIMAL/100, 2)  
+		WHEN cor_rev_perc_other_fasb ISNULL AND cor_rev_perc_other_gasb NOTNULL THEN ROUND(cor_rev_perc_other_gasb::DECIMAL/100, 2)  
+		ELSE NULL END AS cor_rev_perc_other_comb
+	
+	,ROUND(cor_rev_perc_state_appr_gasb::DECIMAL/100, 2) AS cor_rev_perc_state_appr_gasb	
+	,ROUND(cor_rev_perc_loc_appr_gasb::DECIMAL/100, 2) AS cor_rev_perc_loc_appr_gasb	
+	,ROUND(cor_rev_perc_gifts_fasb::DECIMAL/100, 2) AS cor_rev_perc_gifts_fasb	
+	,ROUND(cor_rev_investment_fasb::DECIMAL/100, 2) AS cor_rev_investment_fasb		
+		
+	,CASE WHEN fte_rev_tuition_fees_gasb ISNULL AND fte_rev_tuition_fees_fasb NOTNULL THEN fte_rev_tuition_fees_fasb
+		WHEN fte_rev_tuition_fees_fasb ISNULL AND fte_rev_tuition_fees_gasb NOTNULL THEN fte_rev_tuition_fees_gasb
+		ELSE NULL END AS fte_rev_tuition_fees_comb
+	,CASE WHEN fte_rev_grants_gasb ISNULL AND fte_rev_grants_fasb NOTNULL THEN fte_rev_grants_fasb
+		WHEN fte_rev_grants_fasb ISNULL AND fte_rev_grants_gasb NOTNULL THEN fte_rev_grants_gasb
+		ELSE NULL END AS fte_rev_grants_comb
+	,CASE WHEN fte_rev_other_gasb ISNULL AND fte_rev_other_fasb NOTNULL THEN fte_rev_other_fasb
+		WHEN fte_rev_other_fasb ISNULL AND fte_rev_other_gasb NOTNULL THEN fte_rev_other_gasb
+		ELSE NULL END AS fte_rev_other_comb	
+		
+	,fte_rev_state_appr_gasb
+	,fte_rev_loc_appr_gasb
+	,fte_rev_gifts_fasb
+	,fte_rev_investment_fasb
+	
+	,CASE WHEN cor_exp_total_dollars_gasb ISNULL AND cor_exp_total_dollars_fasb NOTNULL THEN cor_exp_total_dollars_fasb
+		WHEN cor_exp_total_dollars_fasb ISNULL AND cor_exp_total_dollars_gasb NOTNULL THEN cor_exp_total_dollars_gasb
+		ELSE NULL END AS cor_exp_total_dollars_comb	
+	,CASE WHEN cor_exp_perc_instruction_gasb ISNULL AND cor_exp_perc_instruction_fasb NOTNULL THEN ROUND(cor_exp_perc_instruction_fasb::DECIMAL/100, 2)
+		WHEN cor_exp_perc_instruction_fasb ISNULL AND cor_exp_perc_instruction_gasb NOTNULL THEN ROUND(cor_exp_perc_instruction_gasb::DECIMAL/100, 2)
+		ELSE NULL END AS cor_exp_perc_instruction_comb
+	,CASE WHEN cor_exp_perc_research_gasb ISNULL AND cor_exp_perc_research_fasb NOTNULL THEN ROUND(cor_exp_perc_research_fasb::DECIMAL/100, 2)
+		WHEN cor_exp_perc_research_fasb ISNULL AND cor_exp_perc_research_gasb NOTNULL THEN ROUND(cor_exp_perc_research_gasb::DECIMAL/100, 2)
+		ELSE NULL END AS cor_exp_perc_research_comb		
+	,CASE WHEN cor_exp_perc_public_srv_gasb ISNULL AND cor_exp_perc_public_srv_fasb NOTNULL THEN ROUND(cor_exp_perc_public_srv_fasb::DECIMAL/100, 2)
+		WHEN cor_exp_perc_public_srv_fasb ISNULL AND cor_exp_perc_public_srv_gasb NOTNULL THEN ROUND(cor_exp_perc_public_srv_gasb::DECIMAL/100, 2)
+		ELSE NULL END AS cor_exp_perc_public_srv_comb		
+	,CASE WHEN cor_exp_perc_acad_support_gasb ISNULL AND cor_exp_perc_acad_support_fasb NOTNULL THEN ROUND(cor_exp_perc_acad_support_fasb::DECIMAL/100, 2)
+		WHEN cor_exp_perc_acad_support_fasb ISNULL AND cor_exp_perc_acad_support_gasb NOTNULL THEN ROUND(cor_exp_perc_acad_support_gasb::DECIMAL/100, 2)
+		ELSE NULL END AS cor_exp_perc_acad_support_comb
+	,CASE WHEN cor_exp_perc_student_serv_gasb ISNULL AND cor_exp_perc_student_serv_fasb NOTNULL THEN ROUND(cor_exp_perc_student_serv_fasb::DECIMAL/100, 2)
+		WHEN cor_exp_perc_student_serv_fasb ISNULL AND cor_exp_perc_student_serv_gasb NOTNULL THEN ROUND(cor_exp_perc_student_serv_gasb::DECIMAL/100, 2)
+		ELSE NULL END AS cor_exp_perc_student_serv_comb		
+	,CASE WHEN cor_exp_perc_inst_serv_gasb ISNULL AND cor_exp_perc_inst_serv_fasb NOTNULL THEN ROUND(cor_exp_perc_inst_serv_fasb::DECIMAL/100, 2)
+		WHEN cor_exp_perc_inst_serv_fasb ISNULL AND cor_exp_perc_inst_serv_gasb NOTNULL THEN ROUND(cor_exp_perc_inst_serv_gasb::DECIMAL/100, 2)
+		ELSE NULL END AS cor_exp_perc_inst_serv_comb		
+	,CASE WHEN cor_exp_perc_other_gasb ISNULL AND cor_exp_perc_other_fasb NOTNULL THEN ROUND(cor_exp_perc_other_fasb::DECIMAL/100, 2)
+		WHEN cor_exp_perc_other_fasb ISNULL AND cor_exp_perc_other_gasb NOTNULL THEN ROUND(cor_exp_perc_other_gasb::DECIMAL/100, 2)
+		ELSE NULL END AS cor_exp_perc_other_comb	
+	,CASE WHEN fte_exp_instruction_gasb ISNULL AND fte_exp_instruction_fasb NOTNULL THEN fte_exp_instruction_fasb
+		WHEN fte_exp_instruction_fasb ISNULL AND fte_exp_instruction_gasb NOTNULL THEN fte_exp_instruction_gasb
+		ELSE NULL END AS fte_exp_instruction_comb
+	,CASE WHEN fte_exp_research_gasb ISNULL AND fte_exp_research_fasb NOTNULL THEN fte_exp_research_fasb
+		WHEN fte_exp_research_fasb ISNULL AND fte_exp_research_gasb NOTNULL THEN fte_exp_research_gasb
+		ELSE NULL END AS fte_exp_research_comb		
+	,CASE WHEN fte_exp_public_srv_gasb ISNULL AND fte_exp_public_srv_fasb NOTNULL THEN fte_exp_public_srv_fasb
+		WHEN fte_exp_public_srv_fasb ISNULL AND fte_exp_public_srv_gasb NOTNULL THEN fte_exp_public_srv_gasb
+		ELSE NULL END AS fte_exp_public_srv_comb		
+	,CASE WHEN fte_exp_acad_support_gasb ISNULL AND fte_exp_acad_support_fasb NOTNULL THEN fte_exp_acad_support_fasb
+		WHEN fte_exp_acad_support_fasb ISNULL AND fte_exp_acad_support_gasb NOTNULL THEN fte_exp_acad_support_gasb
+		ELSE NULL END AS fte_exp_acad_support_comb
+	,CASE WHEN fte_exp_student_serv_gasb ISNULL AND fte_exp_student_serv_fasb NOTNULL THEN fte_exp_student_serv_fasb
+		WHEN fte_exp_student_serv_fasb ISNULL AND fte_exp_student_serv_gasb NOTNULL THEN fte_exp_student_serv_gasb
+		ELSE NULL END AS fte_exp_student_serv_comb		
+	,CASE WHEN fte_exp_inst_serv_gasb ISNULL AND fte_exp_inst_serv_fasb NOTNULL THEN fte_exp_inst_serv_fasb
+		WHEN fte_exp_inst_serv_fasb ISNULL AND fte_exp_inst_serv_gasb NOTNULL THEN fte_exp_inst_serv_gasb
+		ELSE NULL END AS fte_exp_inst_serv_comb		
+	,CASE WHEN fte_exp_other_gasb ISNULL AND fte_exp_other_fasb NOTNULL THEN fte_exp_other_fasb
+		WHEN fte_exp_other_fasb ISNULL AND fte_exp_other_gasb NOTNULL THEN fte_exp_other_gasb
+		ELSE NULL END AS fte_exp_other_comb			
+	,CASE WHEN equity_ratio_gasb ISNULL AND equity_ratio_fasb NOTNULL THEN ROUND(equity_ratio_fasb::DECIMAL/100, 2)
+		WHEN equity_ratio_fasb ISNULL AND equity_ratio_gasb NOTNULL THEN ROUND(equity_ratio_gasb::DECIMAL/100, 2)
+		ELSE NULL END AS equity_ratio_comb	
+	
+	,fte_endowment_fasb
+	,ug_enrollment
+	,grad_enrollment
+	,num_first_time_ug_in_state
+	,num_first_time_ug_out_state
+	
+	--Changing percent fields into decimals
+	,ROUND(perc_first_time_ug_out_state::DECIMAL/100, 2) AS perc_first_time_ug_out_state	
+	,ROUND(perc_first_time_ug_in_state::DECIMAL/100, 2) AS perc_first_time_ug_in_state		
+		
+FROM higher_ed_dataset;
+
+
