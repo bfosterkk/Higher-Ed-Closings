@@ -1,8 +1,20 @@
+
 DROP TABLE IF EXISTS higher_ed_dataset_1;
 CREATE TABLE higher_ed_dataset_1 AS
 SELECT a.unitid
 	,a.instname
 	,a.ay
+	,CASE WHEN a.ay='2008-2009' THEN 1
+		WHEN a.ay='2009-2010' THEN 2
+		WHEN a.ay='2010-2011' THEN 3
+		WHEN a.ay='2011-2012' THEN 4
+		WHEN a.ay='2012-2013' THEN 5
+		WHEN a.ay='2013-2014' THEN 6
+		WHEN a.ay='2014-2015' THEN 7
+		WHEN a.ay='2015-2016' THEN 8
+		WHEN a.ay='2016-2017' THEN 9
+		WHEN a.ay='2017-2018' THEN 10
+		ELSE NULL END AS ay_number
 	
 	--Changing percent fields into decimals
 	,ROUND(a.percent_ft_ug_aid::DECIMAL/100, 2) AS percent_ft_ug_aid
@@ -10,22 +22,22 @@ SELECT a.unitid
 	,ROUND(a.percent_ft_ug_pell_aid::DECIMAL/100, 2) AS percent_ft_ug_pell_aid
 
 	--Merging public and private aid year fields	
-	,CASE WHEN a.avg_np_stdnts_aid_current_yr_public ISNULL AND a.avg_np_stdnts_aid_current_yr_private NOTNULL THEN a.avg_np_stdnts_aid_current_yr_private
-		WHEN a.avg_np_stdnts_aid_current_yr_private ISNULL AND a.avg_np_stdnts_aid_current_yr_public NOTNULL THEN a.avg_np_stdnts_aid_current_yr_public
+	,CASE WHEN a.avg_np_stdnts_aid_current_yr_public ISNULL AND a.avg_np_stdnts_aid_current_yr_private NOTNULL THEN a.avg_np_stdnts_aid_current_yr_private::NUMERIC
+		WHEN a.avg_np_stdnts_aid_current_yr_private ISNULL AND a.avg_np_stdnts_aid_current_yr_public NOTNULL THEN a.avg_np_stdnts_aid_current_yr_public::NUMERIC
 		ELSE NULL END AS avg_np_stdnts_aid_current_yr
-	,CASE WHEN a.avg_np_stdnts_aid_prior_1_yr_public ISNULL AND a.avg_np_stdnts_aid_prior_1_yr_private NOTNULL THEN a.avg_np_stdnts_aid_prior_1_yr_private
-		WHEN a.avg_np_stdnts_aid_prior_1_yr_private ISNULL AND a.avg_np_stdnts_aid_prior_1_yr_public NOTNULL THEN a.avg_np_stdnts_aid_prior_1_yr_public
+	,CASE WHEN a.avg_np_stdnts_aid_prior_1_yr_public ISNULL AND a.avg_np_stdnts_aid_prior_1_yr_private NOTNULL THEN a.avg_np_stdnts_aid_prior_1_yr_private::NUMERIC
+		WHEN a.avg_np_stdnts_aid_prior_1_yr_private ISNULL AND a.avg_np_stdnts_aid_prior_1_yr_public NOTNULL THEN a.avg_np_stdnts_aid_prior_1_yr_public::NUMERIC
 		ELSE NULL END AS avg_np_stdnts_aid_1_yr
-	,CASE WHEN a.avg_np_stdnts_aid_prior_2_yr_public ISNULL AND a.avg_np_stdnts_aid_prior_2_yr_private NOTNULL THEN a.avg_np_stdnts_aid_prior_2_yr_private
-		WHEN a.avg_np_stdnts_aid_current_yr_private ISNULL AND a.avg_np_stdnts_aid_prior_2_yr_public NOTNULL THEN a.avg_np_stdnts_aid_prior_2_yr_public
+	,CASE WHEN a.avg_np_stdnts_aid_prior_2_yr_public ISNULL AND a.avg_np_stdnts_aid_prior_2_yr_private NOTNULL THEN a.avg_np_stdnts_aid_prior_2_yr_private::NUMERIC
+		WHEN a.avg_np_stdnts_aid_current_yr_private ISNULL AND a.avg_np_stdnts_aid_prior_2_yr_public NOTNULL THEN a.avg_np_stdnts_aid_prior_2_yr_public::NUMERIC
 		ELSE NULL END AS avg_np_stdnts_aid_2_yr
 	
 	,a.stabbr
-	,a.sector
+	,c.sector
 
 	--Adding a description to the sector field
-	,CASE WHEN a.sector='1' THEN 'Public  4-year or above' 
-		WHEN a.sector='2' THEN 'Private not-for-profit 4 year or above'
+	,CASE WHEN c.sector='1' THEN 'Public  4-year or above' 
+		WHEN c.sector='2' THEN 'Private not-for-profit 4 year or above'
 		ELSE NULL END AS sector_desc
 		
 	,a.instsize
@@ -67,16 +79,16 @@ SELECT a.unitid
 	,CASE WHEN b.closed_ind=1 THEN 1
 		ELSE 0 END AS closed_ind
 	
-	,a.pub_in_state_tuition_fees
-	,a.pub_out_state_tuition_fees
+	,a.pub_in_state_tuition_fees::NUMERIC
+	,a.pub_out_state_tuition_fees::NUMERIC
 	
 	--Changing rate fields into decimals
 	,ROUND(a.ft_retention_rate::DECIMAL/100, 2) AS ft_retention_rate
 	,ROUND(a.pt_retention_rate::DECIMAL/100, 2) AS pt_retention_rate
 	
-	,a.enrtot
-	,a.enrft
-	,a.enrpt
+	,a.enrtot::NUMERIC
+	,a.enrft::NUMERIC
+	,a.enrpt::NUMERIC
 
 	--Changing percent fields into decimals
 	,ROUND(a.admissions_yield::DECIMAL/100, 2) AS admissions_yield
@@ -84,16 +96,16 @@ SELECT a.unitid
 	,ROUND(a.admissions_yield_ft::DECIMAL/100, 2) AS admissions_yield_ft
 	,ROUND(a.admissions_yield_pt::DECIMAL/100, 2) AS admissions_yield_pt
 	
-	,a.price_in_state_on_campus
-	,a.price_out_state_on_campus
-	,a.un_dup_12_month_hc
+	,a.price_in_state_on_campus::NUMERIC
+	,a.price_out_state_on_campus::NUMERIC
+	,a.un_dup_12_month_hc::NUMERIC
 	
 	--Changing rate fields into decimals
 	,ROUND(a.transfer_out_rate::DECIMAL/100, 2) AS transfer_out_rate	
 
-	,a.num_completed_ba_deg_100
-	,a.num_completed_ba_deg_150
-	,a.num_completed_ba_deg_200
+	,a.num_completed_ba_deg_100::NUMERIC
+	,a.num_completed_ba_deg_150::NUMERIC
+	,a.num_completed_ba_deg_200::NUMERIC
 	
 	--Changing percent fields into decimals
 	,ROUND(a.perc_completed_ba_deg_100::DECIMAL/100, 2) AS perc_completed_ba_deg_100	
@@ -119,23 +131,23 @@ SELECT a.unitid
 	,ROUND(a.cor_rev_perc_gifts_fasb::DECIMAL/100, 2) AS cor_rev_perc_gifts_fasb	
 	,ROUND(a.cor_rev_investment_fasb::DECIMAL/100, 2) AS cor_rev_investment_fasb		
 		
-	,CASE WHEN a.fte_rev_tuition_fees_gasb ISNULL AND a.fte_rev_tuition_fees_fasb NOTNULL THEN a.fte_rev_tuition_fees_fasb
-		WHEN a.fte_rev_tuition_fees_fasb ISNULL AND a.fte_rev_tuition_fees_gasb NOTNULL THEN a.fte_rev_tuition_fees_gasb
+	,CASE WHEN a.fte_rev_tuition_fees_gasb ISNULL AND a.fte_rev_tuition_fees_fasb NOTNULL THEN a.fte_rev_tuition_fees_fasb::NUMERIC
+		WHEN a.fte_rev_tuition_fees_fasb ISNULL AND a.fte_rev_tuition_fees_gasb NOTNULL THEN a.fte_rev_tuition_fees_gasb::NUMERIC
 		ELSE NULL END AS fte_rev_tuition_fees_comb
-	,CASE WHEN a.fte_rev_grants_gasb ISNULL AND a.fte_rev_grants_fasb NOTNULL THEN a.fte_rev_grants_fasb
-		WHEN a.fte_rev_grants_fasb ISNULL AND a.fte_rev_grants_gasb NOTNULL THEN a.fte_rev_grants_gasb
+	,CASE WHEN a.fte_rev_grants_gasb ISNULL AND a.fte_rev_grants_fasb NOTNULL THEN a.fte_rev_grants_fasb::NUMERIC
+		WHEN a.fte_rev_grants_fasb ISNULL AND a.fte_rev_grants_gasb NOTNULL THEN a.fte_rev_grants_gasb::NUMERIC
 		ELSE NULL END AS fte_rev_grants_comb
-	,CASE WHEN a.fte_rev_other_gasb ISNULL AND a.fte_rev_other_fasb NOTNULL THEN a.fte_rev_other_fasb
-		WHEN a.fte_rev_other_fasb ISNULL AND a.fte_rev_other_gasb NOTNULL THEN a.fte_rev_other_gasb
+	,CASE WHEN a.fte_rev_other_gasb ISNULL AND a.fte_rev_other_fasb NOTNULL THEN a.fte_rev_other_fasb::NUMERIC
+		WHEN a.fte_rev_other_fasb ISNULL AND a.fte_rev_other_gasb NOTNULL THEN a.fte_rev_other_gasb::NUMERIC
 		ELSE NULL END AS fte_rev_other_comb	
 		
-	,a.fte_rev_state_appr_gasb
-	,a.fte_rev_loc_appr_gasb
-	,a.fte_rev_gifts_fasb
-	,a.fte_rev_investment_fasb
+	,a.fte_rev_state_appr_gasb::NUMERIC
+	,a.fte_rev_loc_appr_gasb::NUMERIC
+	,a.fte_rev_gifts_fasb::NUMERIC
+	,a.fte_rev_investment_fasb::NUMERIC
 	
-	,CASE WHEN a.cor_exp_total_dollars_gasb ISNULL AND a.cor_exp_total_dollars_fasb NOTNULL THEN cor_exp_total_dollars_fasb
-		WHEN a.cor_exp_total_dollars_fasb ISNULL AND a.cor_exp_total_dollars_gasb NOTNULL THEN cor_exp_total_dollars_gasb
+	,CASE WHEN a.cor_exp_total_dollars_gasb ISNULL AND a.cor_exp_total_dollars_fasb NOTNULL THEN cor_exp_total_dollars_fasb::NUMERIC
+		WHEN a.cor_exp_total_dollars_fasb ISNULL AND a.cor_exp_total_dollars_gasb NOTNULL THEN cor_exp_total_dollars_gasb::NUMERIC
 		ELSE NULL END AS cor_exp_total_dollars_comb	
 	,CASE WHEN a.cor_exp_perc_instruction_gasb ISNULL AND a.cor_exp_perc_instruction_fasb NOTNULL THEN ROUND(a.cor_exp_perc_instruction_fasb::DECIMAL/100, 2)
 		WHEN a.cor_exp_perc_instruction_fasb ISNULL AND a.cor_exp_perc_instruction_gasb NOTNULL THEN ROUND(a.cor_exp_perc_instruction_gasb::DECIMAL/100, 2)
@@ -158,36 +170,36 @@ SELECT a.unitid
 	,CASE WHEN a.cor_exp_perc_other_gasb ISNULL AND a.cor_exp_perc_other_fasb NOTNULL THEN ROUND(a.cor_exp_perc_other_fasb::DECIMAL/100, 2)
 		WHEN a.cor_exp_perc_other_fasb ISNULL AND a.cor_exp_perc_other_gasb NOTNULL THEN ROUND(a.cor_exp_perc_other_gasb::DECIMAL/100, 2)
 		ELSE NULL END AS cor_exp_perc_other_comb	
-	,CASE WHEN a.fte_exp_instruction_gasb ISNULL AND a.fte_exp_instruction_fasb NOTNULL THEN a.fte_exp_instruction_fasb
-		WHEN a.fte_exp_instruction_fasb ISNULL AND a.fte_exp_instruction_gasb NOTNULL THEN a.fte_exp_instruction_gasb
+	,CASE WHEN a.fte_exp_instruction_gasb ISNULL AND a.fte_exp_instruction_fasb NOTNULL THEN a.fte_exp_instruction_fasb::NUMERIC
+		WHEN a.fte_exp_instruction_fasb ISNULL AND a.fte_exp_instruction_gasb NOTNULL THEN a.fte_exp_instruction_gasb::NUMERIC
 		ELSE NULL END AS fte_exp_instruction_comb
-	,CASE WHEN a.fte_exp_research_gasb ISNULL AND a.fte_exp_research_fasb NOTNULL THEN a.fte_exp_research_fasb
-		WHEN a.fte_exp_research_fasb ISNULL AND a.fte_exp_research_gasb NOTNULL THEN a.fte_exp_research_gasb
-		ELSE NULL END AS fte_exp_research_comb		
-	,CASE WHEN a.fte_exp_public_srv_gasb ISNULL AND a.fte_exp_public_srv_fasb NOTNULL THEN a.fte_exp_public_srv_fasb
-		WHEN a.fte_exp_public_srv_fasb ISNULL AND a.fte_exp_public_srv_gasb NOTNULL THEN a.fte_exp_public_srv_gasb
+	,CASE WHEN a.fte_exp_research_gasb ISNULL AND a.fte_exp_research_fasb NOTNULL THEN a.fte_exp_research_fasb::NUMERIC
+		WHEN a.fte_exp_research_fasb ISNULL AND a.fte_exp_research_gasb NOTNULL THEN a.fte_exp_research_gasb::NUMERIC
+		ELSE NULL END AS fte_exp_researchcomb		
+	,CASE WHEN a.fte_exp_public_srv_gasb ISNULL AND a.fte_exp_public_srv_fasb NOTNULL THEN a.fte_exp_public_srv_fasb::NUMERIC
+		WHEN a.fte_exp_public_srv_fasb ISNULL AND a.fte_exp_public_srv_gasb NOTNULL THEN a.fte_exp_public_srv_gasb::NUMERIC
 		ELSE NULL END AS fte_exp_public_srv_comb		
-	,CASE WHEN a.fte_exp_acad_support_gasb ISNULL AND a.fte_exp_acad_support_fasb NOTNULL THEN a.fte_exp_acad_support_fasb
-		WHEN a.fte_exp_acad_support_fasb ISNULL AND a.fte_exp_acad_support_gasb NOTNULL THEN a.fte_exp_acad_support_gasb
+	,CASE WHEN a.fte_exp_acad_support_gasb ISNULL AND a.fte_exp_acad_support_fasb NOTNULL THEN a.fte_exp_acad_support_fasb::NUMERIC
+		WHEN a.fte_exp_acad_support_fasb ISNULL AND a.fte_exp_acad_support_gasb NOTNULL THEN a.fte_exp_acad_support_gasb::NUMERIC
 		ELSE NULL END AS fte_exp_acad_support_comb
-	,CASE WHEN a.fte_exp_student_serv_gasb ISNULL AND a.fte_exp_student_serv_fasb NOTNULL THEN a.fte_exp_student_serv_fasb
-		WHEN a.fte_exp_student_serv_fasb ISNULL AND a.fte_exp_student_serv_gasb NOTNULL THEN a.fte_exp_student_serv_gasb
+	,CASE WHEN a.fte_exp_student_serv_gasb ISNULL AND a.fte_exp_student_serv_fasb NOTNULL THEN a.fte_exp_student_serv_fasb::NUMERIC
+		WHEN a.fte_exp_student_serv_fasb ISNULL AND a.fte_exp_student_serv_gasb NOTNULL THEN a.fte_exp_student_serv_gasb::NUMERIC
 		ELSE NULL END AS fte_exp_student_serv_comb		
-	,CASE WHEN a.fte_exp_inst_serv_gasb ISNULL AND a.fte_exp_inst_serv_fasb NOTNULL THEN a.fte_exp_inst_serv_fasb
-		WHEN a.fte_exp_inst_serv_fasb ISNULL AND a.fte_exp_inst_serv_gasb NOTNULL THEN a.fte_exp_inst_serv_gasb
+	,CASE WHEN a.fte_exp_inst_serv_gasb ISNULL AND a.fte_exp_inst_serv_fasb NOTNULL THEN a.fte_exp_inst_serv_fasb::NUMERIC
+		WHEN a.fte_exp_inst_serv_fasb ISNULL AND a.fte_exp_inst_serv_gasb NOTNULL THEN a.fte_exp_inst_serv_gasb::NUMERIC
 		ELSE NULL END AS fte_exp_inst_serv_comb		
-	,CASE WHEN a.fte_exp_other_gasb ISNULL AND a.fte_exp_other_fasb NOTNULL THEN a.fte_exp_other_fasb
-		WHEN a.fte_exp_other_fasb ISNULL AND a.fte_exp_other_gasb NOTNULL THEN a.fte_exp_other_gasb
+	,CASE WHEN a.fte_exp_other_gasb ISNULL AND a.fte_exp_other_fasb NOTNULL THEN a.fte_exp_other_fasb::NUMERIC
+		WHEN a.fte_exp_other_fasb ISNULL AND a.fte_exp_other_gasb NOTNULL THEN a.fte_exp_other_gasb::NUMERIC
 		ELSE NULL END AS fte_exp_other_comb			
 	,CASE WHEN a.equity_ratio_gasb ISNULL AND a.equity_ratio_fasb NOTNULL THEN ROUND(a.equity_ratio_fasb::DECIMAL/100, 2)
 		WHEN a.equity_ratio_fasb ISNULL AND a.equity_ratio_gasb NOTNULL THEN ROUND(a.equity_ratio_gasb::DECIMAL/100, 2)
 		ELSE NULL END AS equity_ratio_comb	
 	
-	,a.fte_endowment_fasb
-	,a.ug_enrollment
-	,a.grad_enrollment
-	,a.num_first_time_ug_in_state
-	,a.num_first_time_ug_out_state
+	,a.fte_endowment_fasb::NUMERIC
+	,a.ug_enrollment::NUMERIC
+	,a.grad_enrollment::NUMERIC
+	,a.num_first_time_ug_in_state::NUMERIC
+	,a.num_first_time_ug_out_state::NUMERIC
 	
 	--Changing percent fields into decimals
 	,ROUND(a.perc_first_time_ug_out_state::DECIMAL/100, 2) AS perc_first_time_ug_out_state	
@@ -199,7 +211,16 @@ LEFT JOIN
 		,1 AS closed_ind
 	FROM higher_ed_dataset
 	WHERE closedat NOTNULL AND closedat <> '-2') b
-ON a.unitid=b.unitid;
+ON a.unitid=b.unitid
+LEFT JOIN
 
+	--Cleaning up schools with multiple sectors
+	(SELECT DISTINCT unitid
+		,MIN(sector) AS sector
+	 FROM higher_ed_dataset
+	WHERE sector IN ('1','2')
+	GROUP BY 1) c
+ON a.unitid=c.unitid
+WHERE c.sector IS NOT NULL;
 
 
