@@ -1,0 +1,543 @@
+DROP TABLE IF EXISTS higher_ed_summary;
+CREATE TABLE higher_ed_summary AS
+SELECT unitid
+	,instname
+	,sector
+	,closed_ind
+	
+	--percent_ft_ug_aid
+	,ROUND(AVG(percent_ft_ug_aid), 4) AS avg_percent_ft_ug_aid
+	,ROUND(STDDEV(percent_ft_ug_aid), 4) AS stddev_percent_ft_ug_aid
+	,MIN(percent_ft_ug_aid) AS min_percent_ft_ug_aid
+	,MAX(percent_ft_ug_aid) AS max_percent_ft_ug_aid
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY percent_ft_ug_aid ASC) AS median_percent_ft_ug_aid
+	,REGR_SLOPE(ay_number, percent_ft_ug_aid)/100 AS slope_percent_ft_ug_aid
+	
+	--percent_ft_ug_inst_aid
+	,ROUND(AVG(percent_ft_ug_inst_aid), 4) AS avg_percent_ft_ug_inst_aid
+	,ROUND(STDDEV(percent_ft_ug_inst_aid), 4) AS stddev_percent_ft_ug_inst_aid
+	,MIN(percent_ft_ug_inst_aid) AS min_percent_ft_ug_inst_aid
+	,MAX(percent_ft_ug_inst_aid) AS max_percent_ft_ug_inst_aid
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY percent_ft_ug_inst_aid ASC) AS median_percent_ft_ug_inst_aid
+	,REGR_SLOPE(ay_number, percent_ft_ug_inst_aid)/100 AS slope_percent_ft_ug_inst_aid
+	
+	
+	--percent_ft_ug_pell_aid
+	,ROUND(AVG(percent_ft_ug_pell_aid), 4) AS avg_percent_ft_ug_pell_aid
+	,ROUND(STDDEV(percent_ft_ug_pell_aid), 4) AS stddev_percent_ft_ug_pell_aid
+	,MIN(percent_ft_ug_pell_aid) AS min_percent_ft_ug_pell_aid
+	,MAX(percent_ft_ug_pell_aid) AS max_percent_ft_ug_pell_aid
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY percent_ft_ug_pell_aid ASC) AS median_percent_ft_ug_pell_aid
+	,REGR_SLOPE(ay_number, percent_ft_ug_pell_aid)/100 AS slope_percent_ft_ug_pell_aid
+	
+	--avg_np_stdnts_aid_current_yr
+	,ROUND(AVG(avg_np_stdnts_aid_current_yr), 4) AS avg_avg_np_stdnts_aid_current_yr
+	,ROUND(STDDEV(avg_np_stdnts_aid_current_yr), 4) AS stddev_avg_np_stdnts_aid_current_yr
+	,MIN(avg_np_stdnts_aid_current_yr) AS min_avg_np_stdnts_aid_current_yr
+	,MAX(avg_np_stdnts_aid_current_yr) AS max_avg_np_stdnts_aid_current_yr
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY avg_np_stdnts_aid_current_yr ASC) AS median_avg_np_stdnts_aid_current_yrc
+	,REGR_SLOPE(ay_number, avg_np_stdnts_aid_current_yr)/100 AS slope_avg_np_stdnts_aid_current_yr
+	
+	--avg_np_stdnts_aid_1_yr
+	,ROUND(AVG(avg_np_stdnts_aid_1_yr), 4) AS avg_avg_np_stdnts_aid_1_yr
+	,ROUND(STDDEV(avg_np_stdnts_aid_1_yr), 4) AS stddev_avg_np_stdnts_aid_1_yr
+	,MIN(avg_np_stdnts_aid_1_yr) AS min_avg_np_stdnts_aid_1_yr
+	,MAX(avg_np_stdnts_aid_1_yr) AS max_avg_np_stdnts_aid_1_yr
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY avg_np_stdnts_aid_1_yr ASC) AS median_avg_np_stdnts_aid_1_yr
+	,REGR_SLOPE(ay_number, avg_np_stdnts_aid_1_yr)/100 AS slope_avg_np_stdnts_aid_1_yr
+	
+	--avg_np_stdnts_aid_2_yr
+	,ROUND(AVG(avg_np_stdnts_aid_2_yr), 4) AS avg_avg_np_stdnts_aid_2_yr
+	,ROUND(STDDEV(avg_np_stdnts_aid_2_yr), 4) AS stddev_avg_np_stdnts_aid_2_yr
+	,MIN(avg_np_stdnts_aid_2_yr) AS min_avg_np_stdnts_aid_2_yr
+	,MAX(avg_np_stdnts_aid_2_yr) AS max_avg_np_stdnts_aid_2_yr
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY avg_np_stdnts_aid_2_yr ASC) AS median_avg_np_stdnts_aid_2_yr
+	,REGR_SLOPE(ay_number, avg_np_stdnts_aid_2_yr)/100 AS slope_avg_np_stdnts_aid_2_yr
+	
+	--pub_in_state_tuition_fees
+	,ROUND(AVG(pub_in_state_tuition_fees), 4) AS avg_pub_in_state_tuition_fees
+	,ROUND(STDDEV(pub_in_state_tuition_fees), 4) AS stddev_pub_in_state_tuition_fees
+	,MIN(pub_in_state_tuition_fees) AS min_pub_in_state_tuition_fees
+	,MAX(pub_in_state_tuition_fees) AS max_pub_in_state_tuition_fees
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY pub_in_state_tuition_fees ASC) AS median_pub_in_state_tuition_fees
+	,REGR_SLOPE(ay_number, pub_in_state_tuition_fees)/100 AS slope_pub_in_state_tuition_fees
+	
+	--pub_out_state_tuition_fees
+	,ROUND(AVG(pub_out_state_tuition_fees), 4) AS avg_pub_out_state_tuition_fees
+	,ROUND(STDDEV(pub_out_state_tuition_fees), 4) AS stddev_pub_out_state_tuition_fees
+	,MIN(pub_out_state_tuition_fees) AS min_pub_out_state_tuition_fees
+	,MAX(pub_out_state_tuition_fees) AS max_pub_out_state_tuition_fees
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY pub_out_state_tuition_fees ASC) AS median_pub_out_state_tuition_fees
+	,REGR_SLOPE(ay_number, pub_out_state_tuition_fees)/100 AS slope_pub_out_state_tuition_fees
+	
+	--ft_retention_rate
+	,ROUND(AVG(ft_retention_rate), 4) AS avg_ft_retention_rate
+	,ROUND(STDDEV(ft_retention_rate), 4) AS stddev_ft_retention_rate
+	,MIN(ft_retention_rate) AS min_ft_retention_rate
+	,MAX(ft_retention_rate) AS max_ft_retention_rate
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY ft_retention_rate ASC) AS median_ft_retention_rate
+	,REGR_SLOPE(ay_number, ft_retention_rate)/100 AS slope_ft_retention_rate
+		
+	--pt_retention_rate
+	,ROUND(AVG(pt_retention_rate), 4) AS avg_pt_retention_rate
+	,ROUND(STDDEV(pt_retention_rate), 4) AS stddev_pt_retention_rate
+	,MIN(pt_retention_rate) AS min_pt_retention_rate
+	,MAX(pt_retention_rate) AS max_pt_retention_rate
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY pt_retention_rate ASC) AS median_pt_retention_rate
+	,REGR_SLOPE(ay_number, pt_retention_rate)/100 AS slope_pt_retention_rate
+	
+	--enrtot
+	,ROUND(AVG(enrtot), 4) AS avg_enrtot
+	,ROUND(STDDEV(enrtot), 4) AS stddev_enrtot
+	,MIN(enrtot) AS min_enrtot
+	,MAX(enrtot) AS max_enrtot
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY enrtot ASC) AS median_enrtot
+	,REGR_SLOPE(ay_number, enrtot)/100 AS slope_enrtot
+
+	--enrft
+	,ROUND(AVG(enrft), 4) AS avg_enrft
+	,ROUND(STDDEV(enrft), 4) AS stddev_enrft
+	,MIN(enrft) AS min_enrft
+	,MAX(enrft) AS max_enrft
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY enrft ASC) AS median_enrft
+	,REGR_SLOPE(ay_number, enrft)/100 AS slope_enrft	
+	
+	--enrpt
+	,ROUND(AVG(enrpt), 4) AS avg_enrpt
+	,ROUND(STDDEV(enrpt), 4) AS stddev_enrpt
+	,MIN(enrpt) AS min_enrpt
+	,MAX(enrpt) AS max_enrpt
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY enrpt ASC) AS median_enrpt
+	,REGR_SLOPE(ay_number, enrpt)/100 AS slope_enrpt
+
+	--admissions_yield
+	,ROUND(AVG(admissions_yield), 4) AS avg_admissions_yield
+	,ROUND(STDDEV(admissions_yield), 4) AS stddev_admissions_yield
+	,MIN(admissions_yield) AS min_admissions_yield
+	,MAX(admissions_yield) AS max_admissions_yield
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY admissions_yield ASC) AS median_admissions_yield
+	,REGR_SLOPE(ay_number, admissions_yield)/100 AS slope_admissions_yield
+	
+	--percent_admitted
+	,ROUND(AVG(percent_admitted), 4) AS avg_percent_admitted
+	,ROUND(STDDEV(percent_admitted), 4) AS stddev_percent_admitted
+	,MIN(percent_admitted) AS min_percent_admitted
+	,MAX(percent_admitted) AS max_percent_admitted
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY percent_admitted ASC) AS median_percent_admitted
+	,REGR_SLOPE(ay_number, percent_admitted)/100 AS slope_percent_admitted
+	
+	--admissions_yield_ft
+	,ROUND(AVG(admissions_yield_ft), 4) AS avg_admissions_yield_ft
+	,ROUND(STDDEV(admissions_yield_ft), 4) AS stddev_admissions_yield_ft
+	,MIN(admissions_yield_ft) AS min_admissions_yield_ft
+	,MAX(admissions_yield_ft) AS max_admissions_yield_ft
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY admissions_yield_ft ASC) AS median_admissions_yield_ft
+	,REGR_SLOPE(ay_number, admissions_yield_ft)/100 AS slope_admissions_yield_ft
+	
+	--admissions_yield_pt
+	,ROUND(AVG(admissions_yield_pt), 4) AS avg_admissions_yield_pt
+	,ROUND(STDDEV(admissions_yield_pt), 4) AS stddev_admissions_yield_pt
+	,MIN(admissions_yield_pt) AS min_admissions_yield_pt
+	,MAX(admissions_yield_pt) AS max_admissions_yield_pt
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY admissions_yield_pt ASC) AS median_admissions_yield_pt
+	,REGR_SLOPE(ay_number, admissions_yield_pt)/100 AS slope_admissions_yield_pt
+	
+	--price_in_state_on_campus
+	,ROUND(AVG(price_in_state_on_campus), 4) AS avg_price_in_state_on_campus
+	,ROUND(STDDEV(price_in_state_on_campus), 4) AS stddev_price_in_state_on_campus
+	,MIN(price_in_state_on_campus) AS min_price_in_state_on_campus
+	,MAX(price_in_state_on_campus) AS max_price_in_state_on_campus
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY price_in_state_on_campus ASC) AS median_price_in_state_on_campus
+	,REGR_SLOPE(ay_number, price_in_state_on_campus)/100 AS slope_price_in_state_on_campus
+	
+	--price_out_state_on_campus
+	,ROUND(AVG(price_out_state_on_campus), 4) AS avg_price_out_state_on_campus
+	,ROUND(STDDEV(price_out_state_on_campus), 4) AS stddev_price_out_state_on_campus
+	,MIN(price_out_state_on_campus) AS min_price_out_state_on_campus
+	,MAX(price_out_state_on_campus) AS max_price_out_state_on_campus
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY price_out_state_on_campus ASC) AS median_price_out_state_on_campus
+	,REGR_SLOPE(ay_number, price_out_state_on_campus)/100 AS slope_price_out_state_on_campus
+	
+	--un_dup_12_month_hc
+	,ROUND(AVG(un_dup_12_month_hc), 4) AS avg_un_dup_12_month_hc
+	,ROUND(STDDEV(un_dup_12_month_hc), 4) AS stddev_un_dup_12_month_hc
+	,MIN(un_dup_12_month_hc) AS min_un_dup_12_month_hc
+	,MAX(un_dup_12_month_hc) AS max_un_dup_12_month_hc
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY un_dup_12_month_hc ASC) AS median_un_dup_12_month_hc
+	,REGR_SLOPE(ay_number, un_dup_12_month_hc)/100 AS slope_un_dup_12_month_hc
+	
+	--transfer_out_rate
+	,ROUND(AVG(transfer_out_rate), 4) AS avg_transfer_out_rate
+	,ROUND(STDDEV(transfer_out_rate), 4) AS stddev_transfer_out_rate
+	,MIN(transfer_out_rate) AS min_transfer_out_rate
+	,MAX(transfer_out_rate) AS max_transfer_out_rate
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY transfer_out_rate ASC) AS median_transfer_out_rate
+	,REGR_SLOPE(ay_number, transfer_out_rate)/100 AS slope_transfer_out_rate
+	
+	--num_completed_ba_deg_100
+	,ROUND(AVG(num_completed_ba_deg_100), 4) AS avg_num_completed_ba_deg_100
+	,ROUND(STDDEV(num_completed_ba_deg_100), 4) AS stddev_num_completed_ba_deg_100
+	,MIN(num_completed_ba_deg_100) AS min_num_completed_ba_deg_100
+	,MAX(num_completed_ba_deg_100) AS max_num_completed_ba_deg_100
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY num_completed_ba_deg_100 ASC) AS median_num_completed_ba_deg_100
+	,REGR_SLOPE(ay_number, num_completed_ba_deg_100)/100 AS slope_num_completed_ba_deg_100
+	
+	--perc_completed_ba_deg_100
+	,ROUND(AVG(perc_completed_ba_deg_100), 4) AS avg_perc_completed_ba_deg_100
+	,ROUND(STDDEV(perc_completed_ba_deg_100), 4) AS stddev_perc_completed_ba_deg_100
+	,MIN(perc_completed_ba_deg_100) AS min_perc_completed_ba_deg_100
+	,MAX(perc_completed_ba_deg_100) AS max_perc_completed_ba_deg_100
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY perc_completed_ba_deg_100 ASC) AS median_perc_completed_ba_deg_100
+	,REGR_SLOPE(ay_number, perc_completed_ba_deg_100)/100 AS slope_perc_completed_ba_deg_100
+	
+	--num_completed_ba_deg_150
+	,ROUND(AVG(num_completed_ba_deg_150), 4) AS avg_num_completed_ba_deg_150
+	,ROUND(STDDEV(num_completed_ba_deg_150), 4) AS stddev_num_completed_ba_deg_150
+	,MIN(num_completed_ba_deg_150) AS min_num_completed_ba_deg_150
+	,MAX(num_completed_ba_deg_150) AS max_num_completed_ba_deg_150
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY num_completed_ba_deg_150 ASC) AS median_num_completed_ba_deg_150
+	,REGR_SLOPE(ay_number, num_completed_ba_deg_150)/100 AS slope_num_completed_ba_deg_150
+	
+	--perc_completed_ba_deg_150
+	,ROUND(AVG(perc_completed_ba_deg_150), 4) AS avg_perc_completed_ba_deg_150
+	,ROUND(STDDEV(perc_completed_ba_deg_150), 4) AS stddev_perc_completed_ba_deg_150
+	,MIN(perc_completed_ba_deg_150) AS min_perc_completed_ba_deg_150
+	,MAX(perc_completed_ba_deg_150) AS max_perc_completed_ba_deg_150
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY perc_completed_ba_deg_150 ASC) AS median_perc_completed_ba_deg_150
+	,REGR_SLOPE(ay_number, perc_completed_ba_deg_150)/100 AS slope_perc_completed_ba_deg_150
+	
+	--num_completed_ba_deg_200
+	,ROUND(AVG(num_completed_ba_deg_200), 4) AS avg_num_completed_ba_deg_200
+	,ROUND(STDDEV(num_completed_ba_deg_200), 4) AS stddev_num_completed_ba_deg_200
+	,MIN(num_completed_ba_deg_200) AS min_num_completed_ba_deg_200
+	,MAX(num_completed_ba_deg_200) AS max_num_completed_ba_deg_200
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY num_completed_ba_deg_200 ASC) AS median_num_completed_ba_deg_200
+	,REGR_SLOPE(ay_number, num_completed_ba_deg_200)/100 AS slope_num_completed_ba_deg_200
+	
+	--perc_completed_ba_deg_200
+	,ROUND(AVG(perc_completed_ba_deg_200), 4) AS avg_perc_completed_ba_deg_200
+	,ROUND(STDDEV(perc_completed_ba_deg_200), 4) AS stddev_perc_completed_ba_deg_200
+	,MIN(perc_completed_ba_deg_200) AS min_perc_completed_ba_deg_200
+	,MAX(perc_completed_ba_deg_200) AS max_perc_completed_ba_deg_200
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY perc_completed_ba_deg_200 ASC) AS median_perc_completed_ba_deg_200
+	,REGR_SLOPE(ay_number, perc_completed_ba_deg_200)/100 AS slope_perc_completed_ba_deg_200
+	
+	--cor_rev_total_dollars_comb
+	,ROUND(AVG(cor_rev_total_dollars_comb), 4) AS avg_cor_rev_total_dollars_comb
+	,ROUND(STDDEV(cor_rev_total_dollars_comb), 4) AS stddev_cor_rev_total_dollars_comb
+	,MIN(cor_rev_total_dollars_comb) AS min_cor_rev_total_dollars_comb
+	,MAX(cor_rev_total_dollars_comb) AS max_cor_rev_total_dollars_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cor_rev_total_dollars_comb ASC) AS median_cor_rev_total_dollars_comb
+	,REGR_SLOPE(ay_number, cor_rev_total_dollars_comb)/100 AS slope_cor_rev_total_dollars_comb	
+
+	--cor_rev_perc_tuition_fees_comb
+	,ROUND(AVG(cor_rev_perc_tuition_fees_comb), 4) AS avg_cor_rev_perc_tuition_fees_comb
+	,ROUND(STDDEV(cor_rev_perc_tuition_fees_comb), 4) AS stddev_cor_rev_perc_tuition_fees_comb
+	,MIN(cor_rev_perc_tuition_fees_comb) AS min_cor_rev_perc_tuition_fees_comb
+	,MAX(cor_rev_perc_tuition_fees_comb) AS max_cor_rev_perc_tuition_fees_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cor_rev_perc_tuition_fees_comb ASC) AS median_cor_rev_perc_tuition_fees_comb
+	,REGR_SLOPE(ay_number, cor_rev_perc_tuition_fees_comb)/100 AS slope_cor_rev_perc_tuition_fees_comb	
+	
+	--cor_rev_perc_grants_comb
+	,ROUND(AVG(cor_rev_perc_grants_comb), 4) AS avg_cor_rev_perc_grants_comb
+	,ROUND(STDDEV(cor_rev_perc_grants_comb), 4) AS stddev_cor_rev_perc_grants_comb
+	,MIN(cor_rev_perc_grants_comb) AS min_cor_rev_perc_grants_comb
+	,MAX(cor_rev_perc_grants_comb) AS max_cor_rev_perc_grants_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cor_rev_perc_grants_comb ASC) AS median_cor_rev_perc_grants_comb
+	,REGR_SLOPE(ay_number, cor_rev_perc_grants_comb)/100 AS slope_cor_rev_perc_grants_comb
+	
+	--cor_rev_perc_other_comb
+	,ROUND(AVG(cor_rev_perc_other_comb), 4) AS avg_cor_rev_perc_other_comb
+	,ROUND(STDDEV(cor_rev_perc_other_comb), 4) AS stddev_cor_rev_perc_other_comb
+	,MIN(cor_rev_perc_other_comb) AS min_cor_rev_perc_other_comb
+	,MAX(cor_rev_perc_other_comb) AS max_cor_rev_perc_other_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cor_rev_perc_other_comb ASC) AS median_cor_rev_perc_other_comb
+	,REGR_SLOPE(ay_number, cor_rev_perc_other_comb)/100 AS slope_cor_rev_perc_other_comb
+	
+	--cor_rev_perc_state_appr_gasb
+	,ROUND(AVG(cor_rev_perc_state_appr_gasb), 4) AS avg_cor_rev_perc_state_appr_gasb
+	,ROUND(STDDEV(cor_rev_perc_state_appr_gasb), 4) AS stddev_cor_rev_perc_state_appr_gasb
+	,MIN(cor_rev_perc_state_appr_gasb) AS min_cor_rev_perc_state_appr_gasb
+	,MAX(cor_rev_perc_state_appr_gasb) AS max_cor_rev_perc_state_appr_gasb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cor_rev_perc_state_appr_gasb ASC) AS median_cor_rev_perc_state_appr_gasb
+	,REGR_SLOPE(ay_number, cor_rev_perc_state_appr_gasb)/100 AS slope_cor_rev_perc_state_appr_gasb	
+	
+	--cor_rev_perc_loc_appr_gasb
+	,ROUND(AVG(cor_rev_perc_loc_appr_gasb), 4) AS avg_cor_rev_perc_loc_appr_gasb
+	,ROUND(STDDEV(cor_rev_perc_loc_appr_gasb), 4) AS stddev_cor_rev_perc_loc_appr_gasb
+	,MIN(cor_rev_perc_loc_appr_gasb) AS min_cor_rev_perc_loc_appr_gasb
+	,MAX(cor_rev_perc_loc_appr_gasb) AS max_cor_rev_perc_loc_appr_gasb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cor_rev_perc_loc_appr_gasb ASC) AS median_cor_rev_perc_loc_appr_gasb
+	,REGR_SLOPE(ay_number, cor_rev_perc_loc_appr_gasb)/100 AS slope_cor_rev_perc_loc_appr_gasb	
+
+	--cor_rev_perc_gifts_fasb
+	,ROUND(AVG(cor_rev_perc_gifts_fasb), 4) AS avg_cor_rev_perc_gifts_fasb
+	,ROUND(STDDEV(cor_rev_perc_gifts_fasb), 4) AS stddev_cor_rev_perc_gifts_fasb
+	,MIN(cor_rev_perc_gifts_fasb) AS min_cor_rev_perc_gifts_fasb
+	,MAX(cor_rev_perc_gifts_fasb) AS max_cor_rev_perc_gifts_fasb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cor_rev_perc_gifts_fasb ASC) AS median_cor_rev_perc_gifts_fasb
+	,REGR_SLOPE(ay_number, cor_rev_perc_gifts_fasb)/100 AS slope_cor_rev_perc_gifts_fasb	
+	
+	--cor_rev_investment_fasb
+	,ROUND(AVG(cor_rev_investment_fasb), 4) AS avg_cor_rev_investment_fasb
+	,ROUND(STDDEV(cor_rev_investment_fasb), 4) AS stddev_cor_rev_investment_fasb
+	,MIN(cor_rev_investment_fasb) AS min_cor_rev_investment_fasb
+	,MAX(cor_rev_investment_fasb) AS max_cor_rev_investment_fasb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cor_rev_investment_fasb ASC) AS median_cor_rev_investment_fasb
+	,REGR_SLOPE(ay_number, cor_rev_investment_fasb)/100 AS slope_cor_rev_investment_fasb	
+	
+	--fte_rev_tuition_fees_comb
+	,ROUND(AVG(fte_rev_tuition_fees_comb), 4) AS avg_fte_rev_tuition_fees_comb
+	,ROUND(STDDEV(fte_rev_tuition_fees_comb), 4) AS stddev_fte_rev_tuition_fees_comb
+	,MIN(fte_rev_tuition_fees_comb) AS min_fte_rev_tuition_fees_comb
+	,MAX(fte_rev_tuition_fees_comb) AS max_fte_rev_tuition_fees_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY fte_rev_tuition_fees_comb ASC) AS median_fte_rev_tuition_fees_comb
+	,REGR_SLOPE(ay_number, fte_rev_tuition_fees_comb)/100 AS slope_fte_rev_tuition_fees_comb	
+	
+	--fte_rev_grants_comb
+	,ROUND(AVG(fte_rev_grants_comb), 4) AS avg_fte_rev_grants_comb
+	,ROUND(STDDEV(fte_rev_grants_comb), 4) AS stddev_fte_rev_grants_comb
+	,MIN(fte_rev_grants_comb) AS min_fte_rev_grants_comb
+	,MAX(fte_rev_grants_comb) AS max_fte_rev_grants_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY fte_rev_grants_comb ASC) AS median_fte_rev_grants_comb
+	,REGR_SLOPE(ay_number, fte_rev_grants_comb)/100 AS slope_fte_rev_grants_comb	
+	
+	--fte_rev_other_comb
+	,ROUND(AVG(fte_rev_other_comb), 4) AS avg_fte_rev_other_comb
+	,ROUND(STDDEV(fte_rev_other_comb), 4) AS stddev_fte_rev_other_comb
+	,MIN(fte_rev_other_comb) AS min_fte_rev_other_comb
+	,MAX(fte_rev_other_comb) AS max_fte_rev_other_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY fte_rev_other_comb ASC) AS median_fte_rev_other_comb
+	,REGR_SLOPE(ay_number, fte_rev_other_comb)/100 AS slope_fte_rev_other_comb	
+	
+	--fte_rev_state_appr_gasb
+	,ROUND(AVG(fte_rev_state_appr_gasb), 4) AS avg_fte_rev_state_appr_gasb
+	,ROUND(STDDEV(fte_rev_state_appr_gasb), 4) AS stddev_fte_rev_state_appr_gasb
+	,MIN(fte_rev_state_appr_gasb) AS min_fte_rev_state_appr_gasb
+	,MAX(fte_rev_state_appr_gasb) AS max_fte_rev_state_appr_gasb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY fte_rev_state_appr_gasb ASC) AS median_fte_rev_state_appr_gasb
+	,REGR_SLOPE(ay_number, fte_rev_state_appr_gasb)/100 AS slope_fte_rev_state_appr_gasb	
+	
+	--fte_rev_loc_appr_gasb
+	,ROUND(AVG(fte_rev_loc_appr_gasb), 4) AS avg_fte_rev_loc_appr_gasb
+	,ROUND(STDDEV(fte_rev_loc_appr_gasb), 4) AS stddev_fte_rev_loc_appr_gasb
+	,MIN(fte_rev_loc_appr_gasb) AS min_fte_rev_loc_appr_gasb
+	,MAX(fte_rev_loc_appr_gasb) AS max_fte_rev_loc_appr_gasb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY fte_rev_loc_appr_gasb ASC) AS median_fte_rev_loc_appr_gasb
+	,REGR_SLOPE(ay_number, fte_rev_loc_appr_gasb)/100 AS slope_fte_rev_loc_appr_gasb	
+	
+	--fte_rev_gifts_fasb
+	,ROUND(AVG(fte_rev_gifts_fasb), 4) AS avg_fte_rev_gifts_fasb
+	,ROUND(STDDEV(fte_rev_gifts_fasb), 4) AS stddev_fte_rev_gifts_fasb
+	,MIN(fte_rev_gifts_fasb) AS min_fte_rev_gifts_fasb
+	,MAX(fte_rev_gifts_fasb) AS max_fte_rev_gifts_fasb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY fte_rev_gifts_fasb ASC) AS median_fte_rev_gifts_fasb
+	,REGR_SLOPE(ay_number, fte_rev_gifts_fasb)/100 AS slope_fte_rev_gifts_fasb	
+	
+	--fte_rev_investment_fasb
+	,ROUND(AVG(fte_rev_investment_fasb), 4) AS avg_fte_rev_investment_fasb
+	,ROUND(STDDEV(fte_rev_investment_fasb), 4) AS stddev_fte_rev_investment_fasb
+	,MIN(fte_rev_investment_fasb) AS min_fte_rev_investment_fasb
+	,MAX(fte_rev_investment_fasb) AS max_fte_rev_investment_fasb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY fte_rev_investment_fasb ASC) AS median_fte_rev_investment_fasb
+	,REGR_SLOPE(ay_number, fte_rev_investment_fasb)/100 AS slope_fte_rev_investment_fasb	
+	
+	--cor_exp_total_dollars_comb
+	,ROUND(AVG(cor_exp_total_dollars_comb), 4) AS avg_cor_exp_total_dollars_comb
+	,ROUND(STDDEV(cor_exp_total_dollars_comb), 4) AS stddev_cor_exp_total_dollars_comb
+	,MIN(cor_exp_total_dollars_comb) AS min_cor_exp_total_dollars_comb
+	,MAX(cor_exp_total_dollars_comb) AS max_cor_exp_total_dollars_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cor_exp_total_dollars_comb ASC) AS median_cor_exp_total_dollars_comb
+	,REGR_SLOPE(ay_number, cor_exp_total_dollars_comb)/100 AS slope_cor_exp_total_dollars_comb	
+	
+	--cor_exp_perc_instruction_comb
+	,ROUND(AVG(cor_exp_perc_instruction_comb), 4) AS avg_cor_exp_perc_instruction_comb
+	,ROUND(STDDEV(cor_exp_perc_instruction_comb), 4) AS stddev_cor_exp_perc_instruction_comb
+	,MIN(cor_exp_perc_instruction_comb) AS min_cor_exp_perc_instruction_comb
+	,MAX(cor_exp_perc_instruction_comb) AS max_cor_exp_perc_instruction_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cor_exp_perc_instruction_comb ASC) AS median_cor_exp_perc_instruction_comb
+	,REGR_SLOPE(ay_number, cor_exp_perc_instruction_comb)/100 AS slope_cor_exp_perc_instruction_comb	
+	
+	--cor_exp_perc_research_comb
+	,ROUND(AVG(cor_exp_perc_research_comb), 4) AS avg_cor_exp_perc_research_comb
+	,ROUND(STDDEV(cor_exp_perc_research_comb), 4) AS stddev_cor_exp_perc_research_comb
+	,MIN(cor_exp_perc_research_comb) AS min_cor_exp_perc_research_comb
+	,MAX(cor_exp_perc_research_comb) AS max_cor_exp_perc_research_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cor_exp_perc_research_comb ASC) AS median_cor_exp_perc_research_comb
+	,REGR_SLOPE(ay_number, cor_exp_perc_research_comb)/100 AS slope_cor_exp_perc_research_comb	
+	
+	--cor_exp_perc_public_srv_comb
+	,ROUND(AVG(cor_exp_perc_public_srv_comb), 4) AS avg_cor_exp_perc_public_srv_comb
+	,ROUND(STDDEV(cor_exp_perc_public_srv_comb), 4) AS stddev_cor_exp_perc_public_srv_comb
+	,MIN(cor_exp_perc_public_srv_comb) AS min_cor_exp_perc_public_srv_comb
+	,MAX(cor_exp_perc_public_srv_comb) AS max_cor_exp_perc_public_srv_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cor_exp_perc_public_srv_comb ASC) AS median_cor_exp_perc_public_srv_comb
+	,REGR_SLOPE(ay_number, cor_exp_perc_public_srv_comb)/100 AS slope_cor_exp_perc_public_srv_comb
+	
+	--cor_exp_perc_acad_support_comb
+	,ROUND(AVG(cor_exp_perc_acad_support_comb), 4) AS avg_cor_exp_perc_acad_support_comb
+	,ROUND(STDDEV(cor_exp_perc_acad_support_comb), 4) AS stddev_cor_exp_perc_acad_support_comb
+	,MIN(cor_exp_perc_acad_support_comb) AS min_cor_exp_perc_acad_support_comb
+	,MAX(cor_exp_perc_acad_support_comb) AS max_cor_exp_perc_acad_support_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cor_exp_perc_acad_support_comb ASC) AS median_cor_exp_perc_acad_support_comb
+	,REGR_SLOPE(ay_number, cor_exp_perc_acad_support_comb)/100 AS slope_cor_exp_perc_acad_support_comb
+	
+	--cor_exp_perc_student_serv_comb
+	,ROUND(AVG(cor_exp_perc_student_serv_comb), 4) AS avg_cor_exp_perc_student_serv_comb
+	,ROUND(STDDEV(cor_exp_perc_student_serv_comb), 4) AS stddev_cor_exp_perc_student_serv_comb
+	,MIN(cor_exp_perc_student_serv_comb) AS min_cor_exp_perc_student_serv_comb
+	,MAX(cor_exp_perc_student_serv_comb) AS max_cor_exp_perc_student_serv_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cor_exp_perc_student_serv_comb ASC) AS median_cor_exp_perc_student_serv_comb
+	,REGR_SLOPE(ay_number, cor_exp_perc_student_serv_comb)/100 AS slope_cor_exp_perc_student_serv_comb
+	
+	--cor_exp_perc_inst_serv_comb
+	,ROUND(AVG(cor_exp_perc_inst_serv_comb), 4) AS avg_cor_exp_perc_inst_serv_comb
+	,ROUND(STDDEV(cor_exp_perc_inst_serv_comb), 4) AS stddev_cor_exp_perc_inst_serv_comb
+	,MIN(cor_exp_perc_inst_serv_comb) AS min_cor_exp_perc_inst_serv_comb
+	,MAX(cor_exp_perc_inst_serv_comb) AS max_cor_exp_perc_inst_serv_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cor_exp_perc_inst_serv_comb ASC) AS median_cor_exp_perc_inst_serv_comb
+	,REGR_SLOPE(ay_number, cor_exp_perc_inst_serv_comb)/100 AS slope_cor_exp_perc_inst_serv_comb
+	
+	--cor_exp_perc_other_comb
+	,ROUND(AVG(cor_exp_perc_other_comb), 4) AS avg_cor_exp_perc_other_comb
+	,ROUND(STDDEV(cor_exp_perc_other_comb), 4) AS stddev_cor_exp_perc_other_comb
+	,MIN(cor_exp_perc_other_comb) AS min_cor_exp_perc_other_comb
+	,MAX(cor_exp_perc_other_comb) AS max_cor_exp_perc_other_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cor_exp_perc_other_comb ASC) AS median_cor_exp_perc_other_comb
+	,REGR_SLOPE(ay_number, cor_exp_perc_other_comb)/100 AS slope_cor_exp_perc_other_comb
+
+	--fte_exp_instruction_comb
+	,ROUND(AVG(fte_exp_instruction_comb), 4) AS avg_fte_exp_instruction_comb
+	,ROUND(STDDEV(fte_exp_instruction_comb), 4) AS stddev_fte_exp_instruction_comb
+	,MIN(fte_exp_instruction_comb) AS min_fte_exp_instruction_comb
+	,MAX(fte_exp_instruction_comb) AS max_fte_exp_instruction_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY fte_exp_instruction_comb ASC) AS median_fte_exp_instruction_comb
+	,REGR_SLOPE(ay_number, fte_exp_instruction_comb)/100 AS slope_fte_exp_instruction_comb
+	
+	--fte_exp_researchcomb
+	,ROUND(AVG(fte_exp_researchcomb), 4) AS avg_fte_exp_research_comb
+	,ROUND(STDDEV(fte_exp_researchcomb), 4) AS stddev_fte_exp_research_comb
+	,MIN(fte_exp_researchcomb) AS min_fte_exp_research_comb
+	,MAX(fte_exp_researchcomb) AS max_fte_exp_research_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY fte_exp_researchcomb ASC) AS median_fte_exp_research_comb
+	,REGR_SLOPE(ay_number, fte_exp_researchcomb)/100 AS slope_fte_exp_research_comb
+
+	--fte_exp_public_srv_comb
+	,ROUND(AVG(fte_exp_public_srv_comb), 4) AS avg_fte_exp_public_srv_comb
+	,ROUND(STDDEV(fte_exp_public_srv_comb), 4) AS stddev_fte_exp_public_srv_comb
+	,MIN(fte_exp_public_srv_comb) AS min_fte_exp_public_srv_comb
+	,MAX(fte_exp_public_srv_comb) AS max_fte_exp_public_srv_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY fte_exp_public_srv_comb ASC) AS median_fte_exp_public_srv_comb
+	,REGR_SLOPE(ay_number, fte_exp_public_srv_comb)/100 AS slope_fte_exp_public_srv_comb
+	
+	--fte_exp_acad_support_comb
+	,ROUND(AVG(fte_exp_acad_support_comb), 4) AS avg_fte_exp_acad_support_comb
+	,ROUND(STDDEV(fte_exp_acad_support_comb), 4) AS stddev_fte_exp_acad_support_comb
+	,MIN(fte_exp_acad_support_comb) AS min_fte_exp_acad_support_comb
+	,MAX(fte_exp_acad_support_comb) AS max_fte_exp_acad_support_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY fte_exp_acad_support_comb ASC) AS median_fte_exp_acad_support_comb
+	,REGR_SLOPE(ay_number, fte_exp_acad_support_comb)/100 AS slope_fte_exp_acad_support_comb
+	
+	--fte_exp_student_serv_comb
+	,ROUND(AVG(fte_exp_student_serv_comb), 4) AS avg_fte_exp_student_serv_comb
+	,ROUND(STDDEV(fte_exp_student_serv_comb), 4) AS stddev_fte_exp_student_serv_comb
+	,MIN(fte_exp_student_serv_comb) AS min_fte_exp_student_serv_comb
+	,MAX(fte_exp_student_serv_comb) AS max_fte_exp_student_serv_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY fte_exp_student_serv_comb ASC) AS median_fte_exp_student_serv_comb
+	,REGR_SLOPE(ay_number, fte_exp_student_serv_comb)/100 AS slope_fte_exp_student_serv_comb
+
+	--fte_exp_inst_serv_comb
+	,ROUND(AVG(fte_exp_inst_serv_comb), 4) AS avg_fte_exp_inst_serv_comb
+	,ROUND(STDDEV(fte_exp_inst_serv_comb), 4) AS stddev_fte_exp_inst_serv_comb
+	,MIN(fte_exp_inst_serv_comb) AS min_fte_exp_inst_serv_comb
+	,MAX(fte_exp_inst_serv_comb) AS max_fte_exp_inst_serv_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY fte_exp_inst_serv_comb ASC) AS median_fte_exp_inst_serv_comb
+	,REGR_SLOPE(ay_number, fte_exp_inst_serv_comb)/100 AS slope_fte_exp_inst_serv_comb
+	
+	--fte_exp_other_comb
+	,ROUND(AVG(fte_exp_other_comb), 4) AS avg_fte_exp_other_comb
+	,ROUND(STDDEV(fte_exp_other_comb), 4) AS stddev_fte_exp_other_comb
+	,MIN(fte_exp_other_comb) AS min_fte_exp_other_comb
+	,MAX(fte_exp_other_comb) AS max_fte_exp_other_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY fte_exp_other_comb ASC) AS median_fte_exp_other_comb
+	,REGR_SLOPE(ay_number, fte_exp_other_comb)/100 AS slope_fte_exp_other_comb
+	
+	--equity_ratio_comb
+	,ROUND(AVG(equity_ratio_comb), 4) AS avg_equity_ratio_comb
+	,ROUND(STDDEV(equity_ratio_comb), 4) AS stddev_equity_ratio_comb
+	,MIN(equity_ratio_comb) AS min_equity_ratio_comb
+	,MAX(equity_ratio_comb) AS max_equity_ratio_comb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY equity_ratio_comb ASC) AS median_equity_ratio_comb
+	,REGR_SLOPE(ay_number, equity_ratio_comb)/100 AS slope_equity_ratio_comb
+	
+	--fte_endowment_fasb
+	,ROUND(AVG(fte_endowment_fasb), 4) AS avg_fte_endowment_fasb
+	,ROUND(STDDEV(fte_endowment_fasb), 4) AS stddev_fte_endowment_fasb
+	,MIN(fte_endowment_fasb) AS min_fte_endowment_fasb
+	,MAX(fte_endowment_fasb) AS max_fte_endowment_fasb
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY fte_endowment_fasb ASC) AS median_fte_endowment_fasb
+	,REGR_SLOPE(ay_number, fte_endowment_fasb)/100 AS slope_fte_endowment_fasb
+
+	--ug_enrollment
+	,ROUND(AVG(ug_enrollment), 4) AS avg_ug_enrollment
+	,ROUND(STDDEV(ug_enrollment), 4) AS stddev_ug_enrollment
+	,MIN(ug_enrollment) AS min_ug_enrollment
+	,MAX(ug_enrollment) AS max_ug_enrollment
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY ug_enrollment ASC) AS median_ug_enrollment
+	,REGR_SLOPE(ay_number, ug_enrollment)/100 AS slope_ug_enrollment
+	
+	--grad_enrollment
+	,ROUND(AVG(grad_enrollment), 4) AS avg_grad_enrollment
+	,ROUND(STDDEV(grad_enrollment), 4) AS stddev_grad_enrollment
+	,MIN(grad_enrollment) AS min_grad_enrollment
+	,MAX(grad_enrollment) AS max_grad_enrollment
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY grad_enrollment ASC) AS median_grad_enrollment
+	,REGR_SLOPE(ay_number, grad_enrollment)/100 AS slope_grad_enrollment
+	
+	--num_first_time_ug_in_state
+	,ROUND(AVG(num_first_time_ug_in_state), 4) AS avg_num_first_time_ug_in_state
+	,ROUND(STDDEV(num_first_time_ug_in_state), 4) AS stddev_num_first_time_ug_in_state
+	,MIN(num_first_time_ug_in_state) AS min_num_first_time_ug_in_state
+	,MAX(num_first_time_ug_in_state) AS max_num_first_time_ug_in_state
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY num_first_time_ug_in_state ASC) AS median_num_first_time_ug_in_state
+	,REGR_SLOPE(ay_number, num_first_time_ug_in_state)/100 AS slope_num_first_time_ug_in_state
+	
+	--num_first_time_ug_out_state
+	,ROUND(AVG(num_first_time_ug_out_state), 4) AS avg_num_first_time_ug_out_state
+	,ROUND(STDDEV(num_first_time_ug_out_state), 4) AS stddev_num_first_time_ug_out_state
+	,MIN(num_first_time_ug_out_state) AS min_num_first_time_ug_out_state
+	,MAX(num_first_time_ug_out_state) AS max_num_first_time_ug_out_state
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY num_first_time_ug_out_state ASC) AS median_num_first_time_ug_out_state
+	,REGR_SLOPE(ay_number, num_first_time_ug_out_state)/100 AS slope_num_first_time_ug_out_state
+	
+	--perc_first_time_ug_out_state
+	,ROUND(AVG(perc_first_time_ug_out_state), 4) AS avg_perc_first_time_ug_out_state
+	,ROUND(STDDEV(perc_first_time_ug_out_state), 4) AS stddev_perc_first_time_ug_out_state
+	,MIN(perc_first_time_ug_out_state) AS min_perc_first_time_ug_out_state
+	,MAX(perc_first_time_ug_out_state) AS max_perc_first_time_ug_out_state
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY perc_first_time_ug_out_state ASC) AS median_perc_first_time_ug_out_state
+	,REGR_SLOPE(ay_number, perc_first_time_ug_out_state)/100 AS slope_perc_first_time_ug_out_state
+	
+	--perc_first_time_ug_in_state
+	,ROUND(AVG(perc_first_time_ug_in_state), 4) AS avg_perc_first_time_ug_in_state
+	,ROUND(STDDEV(perc_first_time_ug_in_state), 4) AS stddev_perc_first_time_ug_in_state
+	,MIN(perc_first_time_ug_in_state) AS min_perc_first_time_ug_in_state
+	,MAX(perc_first_time_ug_in_state) AS max_perc_first_time_ug_in_state
+	,PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY perc_first_time_ug_in_state ASC) AS median_perc_first_time_ug_in_state
+	,REGR_SLOPE(ay_number, perc_first_time_ug_in_state)/100 AS slope_perc_first_time_ug_in_state
+	
+FROM higher_ed_dataset_1
+GROUP BY 1,2,3,4;
+
+
+
+	
+
+
+
+
+
+
+
+
+
